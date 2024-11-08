@@ -8,7 +8,7 @@
 
 import React from 'react';
 import IssueList from './IssueList.js';
-import type {Node} from 'react';
+import type { Node } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -29,15 +29,12 @@ import {
 
 
 
-export default class App extends React.Component
-{
-  render()
-  {
-    return(
-    <>
-      <Text>Issue Tracker</Text>
-      <IssueList/>
-    </>);
-
+export default class App extends React.Component {
+  render() {
+    return (
+      <>
+        <Text style={{ fontSize: 32, fontWeight: 'bold', textAlign: 'center' }}>Issue Tracker</Text>
+        <IssueList />
+      </>);
   }
 }
