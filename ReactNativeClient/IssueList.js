@@ -52,7 +52,7 @@ class IssueFilter extends React.Component {
     return (
       <>
         {/****** Q1: Start Coding here. ******/}
-        <View>
+        <View style={styles.container}>
           <Text style={styles.text}>This is a placeholder for the issue filter.</Text>
         </View>
         {/****** Q1: Code ends here ******/}
@@ -62,12 +62,16 @@ class IssueFilter extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, paddingTop: 10, backgroundColor: '#fff' },
-  header: { height: 50, backgroundColor: '#537791' },
+  container: { flex: 1, padding: 10, backgroundColor: '#e9ecef', borderRadius: 5, },
+  content: { padding: 10, backgroundColor: '#e9ecef', margin:20 },
+  header: { height: 50, backgroundColor: '#537791', color: 'white' },
   text: { textAlign: 'center' },
+  headerText: { textAlign: 'center', color: 'white', fontWeight: 'bold' },
   dataWrapper: { marginTop: -1 },
-  row: { height: 40, backgroundColor: '#E7E6E1' },
-  h2: { fontSize: 20, fontWeight: 'bold', textAlign: 'center' }
+  row: {  backgroundColor: '#E7E6E1', borderBlockEndColor: 'gray', borderBottomWidth: 0.5 },
+  h2: { fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 10, },
+  navbar: { flexDirection: 'row', justifyContent: 'space-around', padding: 20},
+  input: { height: 40, borderColor: '#ced4da', borderWidth: 1, marginBottom: 10, borderRadius: 4, backgroundColor: '#fff'},
 });
 
 const width = [40, 80, 80, 80, 80, 80, 200];
@@ -108,7 +112,7 @@ function IssueTable(props) {
     <View style={styles.container}>
       {/****** Q2: Start Coding here to render the table header/rows.**********/}
       <Table>
-        <Row data={tableHeader}  style={styles.header} textStyle={styles.text}/>
+        <Row data={tableHeader}  style={styles.header} textStyle={styles.headerText}/>
         {issueRows}
       </Table>
       {/****** Q2: Coding Ends here. ******/}
@@ -158,16 +162,19 @@ class IssueAdd extends React.Component {
           placeholder='Owner'
           value={this.state.owner}
           onChangeText={(value) => this.handleStateChange('owner', value)}
+          style={styles.input}
           />
         < TextInput
           placeholder='Title'
           value={this.state.title}
           onChangeText={(value) => this.handleStateChange('title', value)}
+          style={styles.input}
           />
         < TextInput
           placeholder='Effort'
           value={this.state.effort}
           onChangeText={(value) => this.handleStateChange('effort', value)}
+          style={styles.input}
           />
         <Button onPress={this.handleSubmit} title="Add" />
         {/****** Q3: Code Ends here. ******/}
@@ -208,6 +215,7 @@ class BlackList extends React.Component {
           placeholder='Name'
           value={this.state.name}
           onChangeText={(value) => this.handleStateChange('name', value)}
+          style={styles.input}
         />
         <Button onPress={this.handleSubmit} title="Add" />
         {/****** Q4: Code Ends here. ******/}
@@ -219,8 +227,12 @@ class BlackList extends React.Component {
 export default class IssueList extends React.Component {
   constructor() {
     super();
-    this.state = { issues: [] };
+    this.state = { 
+      issues: [],
+      selector: 1
+     };
     this.createIssue = this.createIssue.bind(this);
+    this.addToBlacklist = this.addToBlacklist.bind(this);
   }
 
   componentDidMount() {
@@ -266,33 +278,49 @@ export default class IssueList extends React.Component {
     }
   }
 
+  setSelector = (value) => {
+    this.setState({ selector: value });
+  }
+
 
   render() {
     return (
-      <ScrollView>
+      <SafeAreaView>
+        {/* nav bar */}
+        <View style={styles.navbar}>
+          <Button title="IssueFilter" onPress={() => this.setSelector(1)} />
+          <Button title="IssueTable" onPress={() => this.setSelector(2)} />
+          <Button title="IssueAdd" onPress={() => this.setSelector(3)} />
+          <Button title="BlackList" onPress={() => this.setSelector(4)} />
+        </View>
+      <ScrollView style={styles.content}>
         {/****** Q1: Start Coding here. ******/}
-        <IssueFilter />
-        <View style={{ borderBottomColor: '#bbb', borderBottomWidth: 1, marginVertical: 10 }} />
+        {
+          this.state.selector === 1 && <IssueFilter />
+        }
         {/****** Q1: Code ends here ******/}
 
 
         {/****** Q2: Start Coding here. ******/}
-        <IssueTable issues={this.state.issues} />
-        <View style={{ borderBottomColor: '#bbb', borderBottomWidth: 1, marginVertical: 10 }} />
+        {
+          this.state.selector === 2 && <IssueTable issues={this.state.issues} />
+        }
         {/****** Q2: Code ends here ******/}
 
 
         {/****** Q3: Start Coding here. ******/}
-        <IssueAdd createIssue={this.createIssue} />
-        <View style={{ borderBottomColor: '#bbb', borderBottomWidth: 1, marginVertical: 10 }} />
+        {
+          this.state.selector === 3 && <IssueAdd createIssue={this.createIssue} />
+        }
         {/****** Q3: Code Ends here. ******/}
 
         {/****** Q4: Start Coding here. ******/}
-        <BlackList addToBlacklist={this.addToBlacklist} />
-        <View style={{ borderBottomColor: '#bbb', borderBottomWidth: 1, marginVertical: 10 }} />
+        {
+          this.state.selector === 4 && <BlackList addToBlacklist={this.addToBlacklist} />
+        }
         {/****** Q4: Code Ends here. ******/}
       </ScrollView>
-
+    </SafeAreaView>
     );
   }
 }
