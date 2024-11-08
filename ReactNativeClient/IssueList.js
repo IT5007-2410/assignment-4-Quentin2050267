@@ -86,9 +86,7 @@ function IssueRow(props) {
   return (
     <>
       {/****** Q2: Start Coding here. Add Logic to render a row  ******/}
-      {/* <Table> */}
         <Row data={rowData} style={styles.row} textStyle={styles.text}/>
-      {/* </Table> */}
       {/****** Q2: Coding Ends here. ******/}
     </>
   );
@@ -123,21 +121,53 @@ class IssueAdd extends React.Component {
     super();
     this.handleSubmit = this.handleSubmit.bind(this);
     /****** Q3: Start Coding here. Create State to hold inputs******/
+    this.state = {
+      owner: '', 
+      title: '', 
+      effort: ''
+    };
     /****** Q3: Code Ends here. ******/
   }
 
   /****** Q3: Start Coding here. Add functions to hold/set state input based on changes in TextInput******/
+  handleStateChange = (stateName, value) => {
+    this.setState({ [stateName]: value });
+  }
   /****** Q3: Code Ends here. ******/
 
   handleSubmit() {
     /****** Q3: Start Coding here. Create an issue from state variables and call createIssue. Also, clear input field in front-end******/
+    const issue = {
+      owner: this.state.owner,
+      title: this.state.title,
+      effort: this.state.effort,
+      due: new Date(new Date().getTime() + 1000*60*60*24*10)
+    };
+    this.props.createIssue(issue);
+    this.setState({ owner: '', title: '', effort: '' });
     /****** Q3: Code Ends here. ******/
   }
 
   render() {
     return (
-      <View>
+      <View style={styles.container}> 
         {/****** Q3: Start Coding here. Create TextInput field, populate state variables. Create a submit button, and on submit, trigger handleSubmit.*******/}
+        < TextInput
+          placeholder='Owner'
+          value={this.state.owner}
+          onChangeText={(value) => this.handleStateChange('owner', value)}
+          />
+        < TextInput
+          placeholder='Title'
+          value={this.state.title}
+          onChangeText={(value) => this.handleStateChange('title', value)}
+          />
+        < TextInput
+          placeholder='Effort'
+          value={this.state.effort}
+          onChangeText={(value) => this.handleStateChange('effort', value)}
+          />
+        <Button onPress={this.handleSubmit} title="Add" />
         {/****** Q3: Code Ends here. ******/}
       </View>
     );
@@ -210,7 +240,7 @@ export default class IssueList extends React.Component {
 
   render() {
     return (
-      <>
+      <ScrollView>
         {/****** Q1: Start Coding here. ******/}
         <IssueFilter />
         <View style={{ borderBottomColor: '#bbb', borderBottomWidth: 1, marginVertical: 10 }} />
@@ -231,7 +261,7 @@ export default class IssueList extends React.Component {
         {/****** Q4: Start Coding here. ******/}
         <BlackList />
         {/****** Q4: Code Ends here. ******/}
-      </>
+      </ScrollView>
 
     );
   }
