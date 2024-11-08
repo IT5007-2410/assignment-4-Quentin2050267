@@ -62,11 +62,12 @@ class IssueFilter extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff' },
+  container: { flex: 1, padding: 16, paddingTop: 10, backgroundColor: '#fff' },
   header: { height: 50, backgroundColor: '#537791' },
   text: { textAlign: 'center' },
   dataWrapper: { marginTop: -1 },
-  row: { height: 40, backgroundColor: '#E7E6E1' }
+  row: { height: 40, backgroundColor: '#E7E6E1' },
+  h2: { fontSize: 20, fontWeight: 'bold', textAlign: 'center' }
 });
 
 const width = [40, 80, 80, 80, 80, 80, 200];
@@ -152,6 +153,7 @@ class IssueAdd extends React.Component {
     return (
       <View style={styles.container}> 
         {/****** Q3: Start Coding here. Create TextInput field, populate state variables. Create a submit button, and on submit, trigger handleSubmit.*******/}
+        <Text style={styles.h2}> Add a new issue: </Text>
         < TextInput
           placeholder='Owner'
           value={this.state.owner}
@@ -179,20 +181,35 @@ class BlackList extends React.Component {
     super();
     this.handleSubmit = this.handleSubmit.bind(this);
     /****** Q4: Start Coding here. Create State to hold inputs******/
+    this.state = {
+      name: ''
+    };
     /****** Q4: Code Ends here. ******/
   }
   /****** Q4: Start Coding here. Add functions to hold/set state input based on changes in TextInput******/
+  handleStateChange = (stateName, value) => {
+    this.setState({ [stateName]: value });
+  }
   /****** Q4: Code Ends here. ******/
 
   async handleSubmit() {
     /****** Q4: Start Coding here. Create an issue from state variables and issue a query. Also, clear input field in front-end******/
+    await this.props.addToBlacklist(this.state.name);
+    this.setState({ name: '' });
     /****** Q4: Code Ends here. ******/
   }
 
   render() {
     return (
-      <View>
+      <View style={styles.container}>
         {/****** Q4: Start Coding here. Create TextInput field, populate state variables. Create a submit button, and on submit, trigger handleSubmit.*******/}
+        <Text style={styles.h2}> Add to Blacklist: </Text>
+        <TextInput
+          placeholder='Name'
+          value={this.state.name}
+          onChangeText={(value) => this.handleStateChange('name', value)}
+        />
+        <Button onPress={this.handleSubmit} title="Add" />
         {/****** Q4: Code Ends here. ******/}
       </View>
     );
@@ -233,7 +250,19 @@ export default class IssueList extends React.Component {
 
     const data = await graphQLFetch(query, { issue });
     if (data) {
+      alert('Successfully added issue');
       this.loadData();
+    }
+  }
+
+  async addToBlacklist(nameInput) {
+    const query = `mutation addToBlacklist($nameInput: String!) {
+        addToBlacklist(nameInput: $nameInput) 
+    }`;
+
+    const data = await graphQLFetch(query, { nameInput });
+    if (data) {
+      alert('Added to blacklist');
     }
   }
 
@@ -259,7 +288,8 @@ export default class IssueList extends React.Component {
         {/****** Q3: Code Ends here. ******/}
 
         {/****** Q4: Start Coding here. ******/}
-        <BlackList />
+        <BlackList addToBlacklist={this.addToBlacklist} />
+        <View style={{ borderBottomColor: '#bbb', borderBottomWidth: 1, marginVertical: 10 }} />
         {/****** Q4: Code Ends here. ******/}
       </ScrollView>
 
